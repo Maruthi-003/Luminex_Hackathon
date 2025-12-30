@@ -229,18 +229,27 @@ footer {
 # -------------------------------
 # LOAD PKL DATA
 # -------------------------------
-@st.cache_data(show_spinner=True)
+@st.cache_resource(show_spinner=True)
 def load_data():
     url = "https://huggingface.co/datasets/Maruthi333/Movies.csv/resolve/main/Movies.csv"
-    
-    df = pd.read_csv(url)
 
-    # preprocessing (unchanged)
+    usecols = ["title", "genres", "vote_average"]
+
+    df = pd.read_csv(
+        url,
+        usecols=usecols,
+        dtype={
+            "title": "string",
+            "genres": "string",
+            "vote_average": "float32"
+        }
+    )
+
     df["title"] = df["title"].str.lower().str.strip()
     df["genres"] = df["genres"].fillna("").str.lower().str.strip()
-    df["vote_average"] = df["vote_average"].astype(float)
 
     return df
+
 
 
 df = load_data()
